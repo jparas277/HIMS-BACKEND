@@ -1,0 +1,88 @@
+# version: 0.2
+# phases:
+#   install:
+#     runtime-versions:
+#      java: corretto17.x
+#   pre_build:
+#     commands:
+#       #installs dependencies into the node_modules/ directory
+#       - mvn clean
+#   build:
+#     commands:
+#       - echo Build started on 'date'
+#       - echo Compiling
+#       - mvn install
+#   post_build:
+#     commands:
+#       - echo Build completed on 'date'
+# # Include only the files required for your application to run.
+# artifacts:
+#   files:
+#     - target/**/*
+#     - appspec.yml
+#     - buildspec.yml
+version: 0.2
+phases:
+  install:
+    commands:
+      # Install Maven
+     - cd ~
+     - sudo apt-get -y update
+     - sudo rm -rf /usr/lib/jvm/*
+     - sudo apt install openjdk-17-jdk -y
+     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+     - echo $JAVA_HOME
+    #  - echo 0 | sudo update-alternatives --config java
+     - mvn --version
+     - wget https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
+     - tar xf apache-maven-3.9.1-bin.tar.gz
+    #  - cd apache-maven-3.9.1
+     - cd ~
+     - sudo rm -R -f  /opt/maven/*
+     - sudo mv apache-maven-3.9.1/* /opt/maven/
+
+     - mvn --version
+     - ls
+    #  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+     - java --version
+     - echo $JAVA_HOME
+     - ls
+     - cd $CODEBUILD_SRC_DIR
+    #  - wget https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
+    #  - tar xf apache-maven-3.9.1-bin.tar.gz
+    # #  - cd apache-maven-3.9.1
+    #  - sudo rm -R -f  /usr/share/maven/*
+    #  - sudo mv ./apache-maven-3.9.1/*  /usr/share/maven/
+     - pwd
+     - ls
+
+  pre_build:
+    commands:
+      # Navigate into the project directory
+      - pwd
+      - ls
+      - mvn clean
+
+  build:
+    commands:
+      # Build the Maven project
+      - mvn install -DskipTests
+
+  post_build:
+    commands:
+      - echo build successful
+      # # Navigate into the target directory
+      # cd target
+
+      # # Create a JAR file
+      # jar -cvf my-app.jar *.jar
+      # # Copy the JAR file to the root directory
+      # cp my-app.jar ../
+      # # Print the contents of the root directory for debugging
+      # ls -alh ../
+artifacts:
+  files:
+    - target/**/*
+    - appspec.yml
+    - scripts/**/*
